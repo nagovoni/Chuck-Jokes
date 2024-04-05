@@ -1,0 +1,103 @@
+<template>
+  <v-app id="inspire">
+    <v-app-bar flat color="#004D40">
+      <v-container class="mx-auto d-flex align-center justify-center">
+        <v-avatar
+          class="me-4 "
+          color="bg-#4DB6AC"
+          size="50"
+        >
+       <v-img src="https://api.chucknorris.io/img/chucknorris_logo_coloured_small@2x.png" alt="chuck-norris-logo"/>
+      </v-avatar>
+
+        <v-btn
+          color="#00BFA5"
+          v-for="link in links"
+          :key="link"
+          :text="link"
+          variant="text"
+          :to="`/${link.toLowerCase()}`"
+
+        ></v-btn>
+
+        <v-spacer></v-spacer>
+
+        <v-responsive max-width="160">
+          <v-text-field
+            prepend-icon="mdi-magnify"
+            v-model="search"
+            density="compact"
+            label="Search"
+            rounded="lg"
+            variant="solo-filled"
+            flat
+            hide-details
+            single-line
+            @input="filter"
+            clearable
+          ></v-text-field>
+        </v-responsive>
+      </v-container>
+    </v-app-bar>
+
+    <v-main class="bg-teal-accent-4">
+      <v-container>
+        <v-row>
+          <v-col cols="2">
+            <v-sheet rounded="lg">
+              <v-list rounded="lg" class="bg-teal-darken-4">
+
+                <v-list-item
+                  v-for="(menu, index) in submenus"
+                  :key="index"
+                  :title="menu.name"
+                  link
+                  :to="menu.path"
+                ></v-list-item>
+              </v-list>
+            </v-sheet>
+          </v-col>
+
+          <v-col>
+            <v-sheet
+              color="teal"
+              min-height="90vh"
+              rounded="lg"
+            >
+             <router-view></router-view>
+            </v-sheet>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
+  </v-app>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { useJokesStore } from '@/store'
+import axios from 'axios';
+
+// access the `store` variable anywhere in the component ✨
+const store = useJokesStore()
+
+const search = ref ('')
+const links = ref (['Home'])
+const submenus = ref (
+  [
+    {
+    name: 'Search',
+    path: '/home/search'
+    },
+    {
+    name: 'Search 1',
+    path: '/search/1'
+    },
+  ]
+)
+
+const filter = () => {
+  store.filterJokes(search.value)
+}
+</script>
+
